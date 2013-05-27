@@ -1,0 +1,12 @@
+LICENSE
+MANIFEST
+META.yml
+Makefile.PL
+README
+README.pod
+dist.ini
+lib/VM/JiffyBox.pm
+lib/VM/JiffyBox/Box.pm
+notes/how_this_module_could_feel_like.pod
+notes/needed_urls.pod
+t/00_load.t
