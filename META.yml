@@ -1,8 +1,10 @@
 ---
 abstract: 'OO-API for JiffyBox Virtual Machine'
 author:
-  - 'Tim Schwarz <todo@todo.de>, Boris Däppen <boris_daeppe    n@bluewin.ch>'
-build_requires: {}
+  - 'Tim Schwarz <todo@todo.de>, Boris Däppen <boris_daeppen@bluewin.ch>'
+build_requires:
+  Test::Exception: 0
+  Test::More: 0
 configure_requires:
   ExtUtils::MakeMaker: 6.30
 dynamic_config: 0
@@ -12,4 +14,9 @@ meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
 name: VM-JiffyBox
-version: 0.001
+requires:
+  Moo: 0
+resources:
+  homepage: https://github.com/tim-schwarz/VM-JiffyBox
+  repository: git://github.com/tim-schwarz/VM-JiffyBox.git
+version: 0.002

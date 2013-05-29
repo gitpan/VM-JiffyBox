@@ -10,7 +10,7 @@ use ExtUtils::MakeMaker 6.30;
 
 my %WriteMakefileArgs = (
   "ABSTRACT" => "OO-API for JiffyBox Virtual Machine",
-  "AUTHOR" => "Tim Schwarz <todo\@todo.de>, Boris D\303\244ppen <boris_daeppe    n\@bluewin.ch>",
+  "AUTHOR" => "Tim Schwarz <todo\@todo.de>, Boris D\303\244ppen <boris_daeppen\@bluewin.ch>",
   "BUILD_REQUIRES" => {},
   "CONFIGURE_REQUIRES" => {
     "ExtUtils::MakeMaker" => "6.30"
@@ -19,9 +19,14 @@ my %WriteMakefileArgs = (
   "EXE_FILES" => [],
   "LICENSE" => "perl",
   "NAME" => "VM::JiffyBox",
-  "PREREQ_PM" => {},
-  "TEST_REQUIRES" => {},
-  "VERSION" => "0.001",
+  "PREREQ_PM" => {
+    "Moo" => 0
+  },
+  "TEST_REQUIRES" => {
+    "Test::Exception" => 0,
+    "Test::More" => 0
+  },
+  "VERSION" => "0.002",
   "test" => {
     "TESTS" => "t/*.t"
   }

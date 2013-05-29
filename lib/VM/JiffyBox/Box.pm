@@ -1,11 +1,14 @@
 package VM::JiffyBox::Box;
+{
+  $VM::JiffyBox::Box::VERSION = '0.002'; # TRIAL
+}
 
-use strict;
-use warnings;
+# ABSTRACT: Representation of a Virtual Machine in JiffyBox
 
 use Moo;
 
-has id => (is => 'rw');
+has id => (is => 'ro');
+has hypervisor => (is => 'rw');
 
 sub get_backup_id {
     my $self = shift;
@@ -31,16 +34,15 @@ sub delete {
 
 __END__
 
-=encoding utf8
-
-=head1 PLEASE NOTE
-
-This module ist still under heavy development and a B<TRIAL> version.
-We do not recommend to test or even use it.
+=pod
 
 =head1 NAME
 
-VM::JiffyBox::Box
+VM::JiffyBox::Box - Representation of a Virtual Machine in JiffyBox
+
+=head1 VERSION
+
+version 0.002
 
 =head1 SYNOPSIS
 
@@ -62,7 +64,12 @@ VM::JiffyBox::Box
 
  1;
 
-=head1 DESCRIPTION
+=encoding utf8
+
+=head1 PLEASE NOTE
+
+This module ist still under heavy development and a B<TRIAL> version.
+We do not recommend to use or even test it.
 
 =head1 METHODS
 
@@ -75,3 +82,24 @@ VM::JiffyBox::Box
 =head2 stop()
 
 =head2 delete()
+
+=head1 SEE ALSO
+
+=over
+
+=item * L<https://github.com/tim-schwarz/VM-JiffyBox>
+
+=back
+
+=head1 AUTHOR
+
+Tim Schwarz <todo@todo.de>, Boris Däppen <boris_daeppen@bluewin.ch>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2013 by Tim Schwarz, Boris Däppen, plusW.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
