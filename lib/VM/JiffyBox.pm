@@ -1,12 +1,52 @@
 package VM::JiffyBox;
 {
-  $VM::JiffyBox::VERSION = '0.0021';
+  $VM::JiffyBox::VERSION = '0.003'; # TRIAL
 }
 
 # The line below is recognised by Dist::Zilla and taken for CPAN packaging
 # ABSTRACT: OO-API for JiffyBox Virtual Machine
 
 use Moo;
+use JSON;
+use LWP::UserAgent;
+
+use VM::JiffyBox::Box;
+
+has domain_name => (is => 'ro', default => 'https://api.jiffybox.de');
+has version     => (is => 'ro', default => 'v1.0');
+has token       => (is => 'ro', required => 1);
+
+has test_mode   => (is => 'ro');
+
+sub base_url {
+    my $self = shift;
+
+    return   $self->domain_name . '/'
+           . $self->token       . '/' 
+           . $self->version     ;
+}
+
+# TODO
+sub get_id_from_name {
+    my $self = shift;
+}
+
+sub get_vm {
+    my $self   = shift;
+    my $box_id = shift;
+
+    my $box = VM::JiffyBox::Box->new(id => $box_id);
+
+    # tell the VM which hypervisor it belongs to
+    $box->hypervisor($self);
+
+    return $box;
+}
+
+# TODO
+sub create_vm {
+    my $self = shift;
+}
 
 1;
 
@@ -20,18 +60,21 @@ VM::JiffyBox - OO-API for JiffyBox Virtual Machine
 
 =head1 VERSION
 
-version 0.0021
+version 0.003
+
+=head1 SYNOPSIS
+
+See the C<examples> directory for examples of working code.
+Synopsis will come when first stable release is here.
 
 =encoding utf8
 
-=head1 ON THIS MODULE
+=head1 PLEASE NOTE
 
-This module ist still under heavy development.
-Releases including code can only be found as B<TRIAL>-uploads which are not indexed on CPAN.
+This module ist still under heavy development and a B<TRIAL> release.
+We do not recommend to use it.
 
-B<THIS MODULE IS A PLACEHOLDER AND CONTAINS ONLY THIS TEXT AND NO CODE>.
-
-If you wish to watch the development, please point your browser to here:
+=head1 SEE ALSO
 
 =over
 
@@ -39,11 +82,9 @@ If you wish to watch the development, please point your browser to here:
 
 =back
 
-Modul will be out somwhere in summer 2013.
-
 =head1 AUTHOR
 
-Tim Schwarz, Boris Däppen <boris_daeppen@bluewin.ch>
+Tim Schwarz <todo@todo.de>, Boris Däppen <boris_daeppen@bluewin.ch>
 
 =head1 COPYRIGHT AND LICENSE
 

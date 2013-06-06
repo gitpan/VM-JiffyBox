@@ -1,0 +1,22 @@
+=head2 Fri May 31 23:00:39 2013: C<Module> L<Moo|Moo>
+
+=over 4
+
+=item *
+
+C<installed into: /home/plusw/job_repos/VM-JiffyBox/tmp/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.000005>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
