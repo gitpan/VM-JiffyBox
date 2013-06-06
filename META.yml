@@ -21,4 +21,4 @@ requires:
 resources:
   homepage: https://github.com/tim-schwarz/VM-JiffyBox
   repository: git://github.com/tim-schwarz/VM-JiffyBox.git
-version: 0.003
+version: 0.004
