@@ -13,3 +13,4 @@ notes/how_this_module_could_feel_like.pod
 notes/needed_urls.pod
 t/00_load.t
 t/01_create.t
+t/05_box-requests.t

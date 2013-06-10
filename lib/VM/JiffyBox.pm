@@ -1,6 +1,6 @@
 package VM::JiffyBox;
 {
-  $VM::JiffyBox::VERSION = '0.004'; # TRIAL
+  $VM::JiffyBox::VERSION = '0.005'; # TRIAL
 }
 
 # The line below is recognised by Dist::Zilla and taken for CPAN packaging
@@ -12,11 +12,11 @@ use LWP::UserAgent;
 
 use VM::JiffyBox::Box;
 
-has domain_name => (is => 'ro', default => 'https://api.jiffybox.de');
-has version     => (is => 'ro', default => 'v1.0');
+has domain_name => (is => 'ro', default => sub {'https://api.jiffybox.de'});
+has version     => (is => 'ro', default => sub {'v1.0'});
 has token       => (is => 'ro', required => 1);
 
-has test_mode   => (is => 'ro');
+has test_mode   => (is => 'rw');
 
 sub base_url {
     my $self = shift;
@@ -60,7 +60,7 @@ VM::JiffyBox - OO-API for JiffyBox Virtual Machine
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 SYNOPSIS
 
@@ -84,7 +84,7 @@ We do not recommend to use it.
 
 =head1 AUTHOR
 
-Tim Schwarz <todo@todo.de>, Boris Däppen <boris_daeppen@bluewin.ch>
+Tim Schwarz, Boris Däppen <bdaeppen.perl@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
