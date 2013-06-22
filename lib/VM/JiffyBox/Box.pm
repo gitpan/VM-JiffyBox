@@ -1,67 +1,161 @@
 package VM::JiffyBox::Box;
 {
-  $VM::JiffyBox::Box::VERSION = '0.005'; # TRIAL
+  $VM::JiffyBox::Box::VERSION = '0.006'; # TRIAL
 }
 
 # ABSTRACT: Representation of a Virtual Machine in JiffyBox
 
 use Moo;
 use JSON;
-use LWP::UserAgent;
+use LWP::UserAgent; # needed?
 
-has id         => (is => 'ro');
+my $def = sub {die unless $_[0]};
+
+has id         => (is => 'ro', isa => $def);
 has hypervisor => (is => 'rw');
 
-# TODO
-sub get_backup_id {
+has last          => (is => 'rw');
+has backup_cache  => (is => 'rw');
+has details_cache => (is => 'rw');
+has start_cache   => (is => 'rw');
+has stop_cache    => (is => 'rw');
+has delete_cache  => (is => 'rw');
+
+sub get_backups {
     my $self = shift;
+    
+    my $url = $self->{hypervisor}->base_url . '/backups/' . $self->id;
+    
+    # POSSIBLE EXIT
+    return $url if ($self->{hypervisor}->test_mode);
+    
+    my $response = $self->{hypervisor}->ua->get($url);
+
+    # POSSIBLE EXIT
+    unless ($response->is_success) {
+
+        $self->last ( $response->status_line );
+        return 0;
+    }
+
+    my $backup_info = from_json($response->decoded_content);
+
+    $self->last         ($backup_info);
+    $self->backup_cache ($backup_info);
+    return               $backup_info ;
+
 }
 
 sub get_details {
     my $self = shift;
-
-    # add request specific stuff to base url
+    
+    # add method specific stuff to the URL
     my $url = $self->{hypervisor}->base_url . '/jiffyBoxes/' . $self->id;
     
-    # if in test_mode we don't do any real request,
-    if ($self->{hypervisor}->test_mode) {
+    # POSSIBLE EXIT
+    # return the URL if we are using test_mode
+    return $url if ($self->{hypervisor}->test_mode);
+    
+    # send the request and return the response
+    my $response = $self->{hypervisor}->ua->get($url);
 
-        # but just return the plain URL
-        return $url;
+    # POSSIBLE EXIT
+    unless ($response->is_success) {
+
+        $self->last ( $response->status_line );
+        return 0;
     }
-    # no test_mode, we do some serious requests
-    else {
-        my $ua = LWP::UserAgent->new();
-        
-        # do HTTP-request to API
-        my $details = $ua->get($url);    
 
-        # check result
-        if ($details->is_success) {
+    my $details = from_json($response->decoded_content);
 
-            # return JSON as a Perl-structure
-            return from_json($details->decoded_content);
-
-        }
-        else {
-            return 0;
-        }
-    }
+    $self->last          ($details);
+    $self->details_cache ($details);
+    return                $details ;
 }
 
-# TODO
 sub start {
     my $self = shift;
+    
+    my $url = $self->{hypervisor}->base_url . '/jiffyBoxes/' . $self->id;
+    
+    # POSSIBLE EXIT
+    return $url if ($self->{hypervisor}->test_mode);
+    
+    # send the request with method specific json content
+    my $response = $self->{hypervisor}->ua->put(  $url,
+                                                  Content => to_json(
+                                                    {
+                                                      status => 'START'
+                                                    }
+                                                  )
+                                                );
+
+    # POSSIBLE EXIT
+    unless ($response->is_success) {
+
+        $self->last ( $response->status_line );
+        return 0;
+    }
+
+    my $start_info = from_json($response->decoded_content);
+
+    $self->last        ($start_info);
+    $self->start_cache ($start_info);
+    return              $start_info ;
 }
 
-# TODO
 sub stop {
     my $self = shift;
+    
+    my $url = $self->{hypervisor}->base_url . '/jiffyBoxes/' . $self->id;
+    
+    # POSSIBLE EXIT
+    return $url if ($self->{hypervisor}->test_mode);
+    
+    my $response = $self->{hypervisor}->ua->put( $url,
+                                                 Content => to_json(
+                                                   {
+                                                     status => 'SHUTDOWN'
+                                                   }
+                                                 )
+                                               );
+        
+    # POSSIBLE EXIT
+    unless ($response->is_success) {
+
+        $self->last ( $response->status_line );
+        return 0;
+    }
+
+    my $stop_info = from_json($response->decoded_content);
+
+    $self->last       ($stop_info);
+    $self->stop_cache ($stop_info);
+    return             $stop_info ;
 }
 
-# TODO
 sub delete {
     my $self = shift;
+    
+    my $url = $self->{hypervisor}->base_url . '/jiffyBoxes/' . $self->id;
+    
+    # POSSIBLE EXIT
+    return $url if ($self->{hypervisor}->test_mode);
+    
+    my $response = $self->{hypervisor}->ua->delete($url);    
+
+    # POSSIBLE EXIT
+    unless ($response->is_success) {
+
+        $self->last ( $response->status_line );
+        return 0;
+    }
+
+    my $delete_info = from_json($response->decoded_content);
+
+    $self->last       ($delete_info);
+    $self->stop_cache ($delete_info);
+    return             $delete_info ;
 }
 
 1;
@@ -76,7 +170,7 @@ VM::JiffyBox::Box - Representation of a Virtual Machine in JiffyBox
 
 =head1 VERSION
 
-version 0.005
+version 0.006
 
 =head1 SYNOPSIS
 

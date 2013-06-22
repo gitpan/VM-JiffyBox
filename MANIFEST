@@ -6,7 +6,14 @@ Makefile.PL
 README
 README.pod
 dist.ini
-examples/request_vm_details.pl
+examples/box-delete.pl
+examples/box-get_backups.pl
+examples/box-get_details.pl
+examples/box-start.pl
+examples/box-stop.pl
+examples/jiffy-create_vm.pl
+examples/jiffy-get_id_from_name.pl
+examples/usecase-create_and_run_backup_clone.pl
 lib/VM/JiffyBox.pm
 lib/VM/JiffyBox/Box.pm
 notes/how_this_module_could_feel_like.pod
