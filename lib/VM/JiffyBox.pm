@@ -1,6 +1,6 @@
 package VM::JiffyBox;
 {
-  $VM::JiffyBox::VERSION = '0.007'; # TRIAL
+  $VM::JiffyBox::VERSION = '0.01';
 }
 
 # The line below is recognised by Dist::Zilla and taken for CPAN packaging
@@ -133,13 +133,13 @@ VM::JiffyBox - OO-API for JiffyBox Virtual Machine
 
 =head1 VERSION
 
-version 0.007
+version 0.01
 
 =head1 SYNOPSIS
 
- #############################
- # CREAT A CLONE FROM BACKUP #
- #############################
+ ##############################
+ # CREATE A CLONE FROM BACKUP #
+ ##############################
  
  # stuff we need to know our self
  my $auth_token = $ARGV[0];
@@ -259,6 +259,11 @@ However it aims to provide an interface to the API of their product I<JiffyBox>.
 So to use this module with success you should also B<read their API-Documentation>, available for registered users of their service.
 
 =back
+
+=head1 SPECIAL NOTES
+
+This software was developed together with an apprentice.
+This is mentioned here to show that this can lead to good modules and encourage programmers to give interesting work to those who are learning.
 
 =head1 AUTHOR
 

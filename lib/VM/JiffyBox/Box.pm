@@ -1,13 +1,12 @@
 package VM::JiffyBox::Box;
 {
-  $VM::JiffyBox::Box::VERSION = '0.007'; # TRIAL
+  $VM::JiffyBox::Box::VERSION = '0.01';
 }
 
 # ABSTRACT: Representation of a Virtual Machine in JiffyBox
 
 use Moo;
 use JSON;
-use LWP::UserAgent; # needed?
 
 has id         => (is => 'rw', required => 1);
 has hypervisor => (is => 'rw');
@@ -168,7 +167,7 @@ VM::JiffyBox::Box - Representation of a Virtual Machine in JiffyBox
 
 =head1 VERSION
 
-version 0.007
+version 0.01
 
 =head1 SYNOPSIS
 
@@ -184,11 +183,12 @@ However if you want to do it yourself:
 You then can do a lot of stuff with this box:
 
  # get some info
- my $backup_id  = $box->get_backups()->{result}->{daily}->{id};
- my $plan_id    = $box->get_details()->{result}->{plan}->{id};
+ my $backup_id = $box->get_backups()->{result}->{daily}->{id};
+ my $plan_id   = $box->get_details()->{result}->{plan}->{id};
 
  # get more info using the caching technique
- my $state      = $box->last->{result}->{status}
+ my $state = $box->details_chache->{result}->{status};
+ my $ip    = $box->last->{result}->{ips}->{public}->[0];
  # ... or
  use Data::Dumper;
  print Dumper( $box->backup_cache->{result} );
