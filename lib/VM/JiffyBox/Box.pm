@@ -1,6 +1,6 @@
 package VM::JiffyBox::Box;
 {
-  $VM::JiffyBox::Box::VERSION = '0.01';
+  $VM::JiffyBox::Box::VERSION = '0.02'; # TRIAL
 }
 
 # ABSTRACT: Representation of a Virtual Machine in JiffyBox
@@ -9,7 +9,7 @@ use Moo;
 use JSON;
 
 has id         => (is => 'rw', required => 1);
-has hypervisor => (is => 'rw');
+has hypervisor => (is => 'rw', required => 1);
 
 has last          => (is => 'rw');
 has backup_cache  => (is => 'rw');
@@ -24,7 +24,7 @@ sub get_backups {
     my $url = $self->{hypervisor}->base_url . '/backups/' . $self->id;
     
     # POSSIBLE EXIT
-    return $url if ($self->{hypervisor}->test_mode);
+    return { url => $url } if ($self->{hypervisor}->test_mode);
     
     my $response = $self->{hypervisor}->ua->get($url);
 
@@ -51,7 +51,7 @@ sub get_details {
     
     # POSSIBLE EXIT
     # return the URL if we are using test_mode
-    return $url if ($self->{hypervisor}->test_mode);
+    return { url => $url } if ($self->{hypervisor}->test_mode);
     
     # send the request and return the response
     my $response = $self->{hypervisor}->ua->get($url);
@@ -73,19 +73,15 @@ sub get_details {
 sub start {
     my $self = shift;
     
-    my $url = $self->{hypervisor}->base_url . '/jiffyBoxes/' . $self->id;
+    my $url  = $self->{hypervisor}->base_url . '/jiffyBoxes/' . $self->id;
+    my $json = to_json( { status => 'START' } );
     
     # POSSIBLE EXIT
-    return $url if ($self->{hypervisor}->test_mode);
+    return { url => $url, json => $json }
+        if ($self->{hypervisor}->test_mode);
     
     # send the request with method specific json content
-    my $response = $self->{hypervisor}->ua->put(  $url,
-                                                  Content => to_json(
-                                                    {
-                                                      status => 'START'
-                                                    }
-                                                  )
-                                                );
+    my $response = $self->{hypervisor}->ua->put( $url, Content => $json ); 
 
     # POSSIBLE EXIT
     unless ($response->is_success) {
@@ -104,19 +100,15 @@ sub start {
 sub stop {
     my $self = shift;
     
-    my $url = $self->{hypervisor}->base_url . '/jiffyBoxes/' . $self->id;
+    my $url  = $self->{hypervisor}->base_url . '/jiffyBoxes/' . $self->id;
+    my $json = to_json( { status => 'SHUTDOWN' } );
     
     # POSSIBLE EXIT
-    return $url if ($self->{hypervisor}->test_mode);
+    return { url => $url, json => $json }
+        if ($self->{hypervisor}->test_mode);
     
-    my $response = $self->{hypervisor}->ua->put( $url,
-                                                 Content => to_json(
-                                                   {
-                                                     status => 'SHUTDOWN'
-                                                   }
-                                                 )
-                                               );
-        
+    my $response = $self->{hypervisor}->ua->put( $url, Content => $json ); 
+
     # POSSIBLE EXIT
     unless ($response->is_success) {
 
@@ -137,7 +129,7 @@ sub delete {
     my $url = $self->{hypervisor}->base_url . '/jiffyBoxes/' . $self->id;
     
     # POSSIBLE EXIT
-    return $url if ($self->{hypervisor}->test_mode);
+    return { url => $url } if ($self->{hypervisor}->test_mode);
     
     my $response = $self->{hypervisor}->ua->delete($url);    
 
@@ -167,7 +159,7 @@ VM::JiffyBox::Box - Representation of a Virtual Machine in JiffyBox
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 SYNOPSIS
 
@@ -175,10 +167,7 @@ This module should be used together with L<VM::JiffyBox>.
 L<VM::JiffyBox> is the factory for producing objects of this module.
 However if you want to do it yourself:
 
- my $box = VM::JiffyBox::Box->new(id => $box_id);
-
- # set the hypervisor of the VM (e.g. ref to JiffyBox)
- $box->hypervisor($ref);
+ my $box = VM::JiffyBox::Box->new(id => $box_id, hypervisor => $ref);
 
 You then can do a lot of stuff with this box:
 
@@ -247,6 +236,28 @@ Contains information of the last call to delete().
 =back
 
 =head1 METHODS
+
+All methods (exluding C<new>) will return information about the request, instead of doing a call to the API if the hypervisor is in C<test_mode>.
+
+=head2 new
+
+Creates a box-object.
+Requires two paramters.
+
+=over
+
+=item id
+
+C<ID> of the box.
+Required.
+See the official documentation of I<JiffyBox> for more information.
+
+=item hypervisor
+
+An object reference to C<VM::JiffyBox>.
+Required.
+
+=back
 
 =head2 get_details
 

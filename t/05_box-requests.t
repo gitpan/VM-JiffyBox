@@ -1,26 +1,31 @@
 use strict;
 use warnings;
 
+use JSON;
 use Test::More;
 my $number_of_tests = 0; # ne need to count them!
 
 use VM::JiffyBox;
 
-my $domain = 'https://api.jiffybox.de';
+my $domain     = 'https://api.jiffybox.de';
 my $auth_token = 'AUTH_TOKEN';
-my $version = 'v1.0';
+my $version    = 'v1.0';
 
-my $base_url = "$domain/$auth_token/$version";
+my $base_url   = "$domain/$auth_token/$version";
 
-my $box_id = 'BOX_ID';
+my $box_id     = 'BOX_ID';
 
 # here is a list of all the requests to check
 my %requests = (
-                get_backups => "$base_url/backups/$box_id",
-                get_details => "$base_url/jiffyBoxes/$box_id",
-                start => "$base_url/jiffyBoxes/$box_id",
-                stop => "$base_url/jiffyBoxes/$box_id",
-                delete => "$base_url/jiffyBoxes/$box_id",
+                get_backups => { url  => "$base_url/backups/$box_id" },
+                get_details => { url  => "$base_url/jiffyBoxes/$box_id" },
+                start       => { url  => "$base_url/jiffyBoxes/$box_id",
+                                 json => to_json( { status => 'START' } ),
+                               },
+                stop        => { url  =>"$base_url/jiffyBoxes/$box_id",
+                                 json => to_json( { status=>'SHUTDOWN' } ),
+                               },
+                delete      => { url  => "$base_url/jiffyBoxes/$box_id" },
                );
 
 ##############
@@ -35,7 +40,7 @@ my $hypervisor = VM::JiffyBox->new( token     => $auth_token,
 
 my $vm = $hypervisor->get_vm($box_id);
 
-my $fresh_url = $vm->get_details();
+my $fresh_url = $vm->get_details()->{url};
 
 $number_of_tests++;
 isnt ($fresh_url,
@@ -50,7 +55,7 @@ isnt ($fresh_url,
 # check all the requests with fresh objects
 for my $method (keys %requests) {
 
-    my $static_url = $requests{$method};
+    my $static_url = $requests{$method}->{url};
 
     my $hypervisor = VM::JiffyBox->new( token     => $auth_token,
                                         test_mode => 1,
@@ -58,11 +63,21 @@ for my $method (keys %requests) {
 
     my $vm = $hypervisor->get_vm($box_id);
 
-    my $fresh_url = $vm->$method();
+    my $fresh_url = $vm->$method()->{url};
 
     $number_of_tests++;
     is ($fresh_url, $static_url, "URL for $method (non-historic)" );
 
+    # also check for JSON if it exists
+    if ( exists $requests{$method}->{json} ) {
+        my $static_json = $requests{$method}->{json};
+        my $fresh_json  = $vm->$method()->{json};
+        $number_of_tests++;
+        is_deeply ( $fresh_json,
+                    $static_json,
+                    "JSON for $method (non-historic)"
+                  );
+    }
 }
 
 ##############
@@ -78,13 +93,23 @@ $vm = $hypervisor->get_vm($box_id);
 
 for my $method (keys %requests) {
 
-    my $static_url = $requests{$method};
+    my $static_url = $requests{$method}->{url};
 
-    my $fresh_url = $vm->$method();
+    my $fresh_url = $vm->$method()->{url};
 
     $number_of_tests++;
     is ($fresh_url, $static_url, "URL for $method (historic)");
 
+    # also check for JSON if it exists
+    if ( exists $requests{$method}->{json} ) {
+        my $static_json = $requests{$method}->{json};
+        my $fresh_json  = $vm->$method()->{json};
+        $number_of_tests++;
+        is_deeply ( $fresh_json,
+                    $static_json,
+                    "JSON for $method (historic)"
+                  );
+    }
 }
 
 ########

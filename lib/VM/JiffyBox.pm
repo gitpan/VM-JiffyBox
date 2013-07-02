@@ -1,6 +1,6 @@
 package VM::JiffyBox;
 {
-  $VM::JiffyBox::VERSION = '0.01';
+  $VM::JiffyBox::VERSION = '0.02'; # TRIAL
 }
 
 # The line below is recognised by Dist::Zilla and taken for CPAN packaging
@@ -71,31 +71,25 @@ sub get_vm {
     my $self   = shift;
     my $box_id = shift || die 'box_id needed';
 
-    my $box = VM::JiffyBox::Box->new(id => $box_id);
-
-    # set the hypervisor of the VM
-    $box->hypervisor($self);
+    my $box = VM::JiffyBox::Box->new(id => $box_id, hypervisor => $self);
 
     return $box;
 }
 
 sub create_vm {
     my $self = shift;
-    my $name = shift || '';
-    my $plan_id = shift || 0;
-    my $backup_id = shift || 0;
-    
+    my $args = {@_};
+
+    # POSSIBLE EXIT (DIE)
+    die 'name needed'                     unless $args->{name};
+    die 'planid needed'                   unless $args->{planid};
+    die 'backupid or distribution needed' unless $args->{backupid}
+                                             xor $args->{distribution};
+
     my $url = $self->base_url . '/jiffyBoxes';
-    
-    my $response = $self->ua->post( $url,
-                                    Content => to_json(
-                                      {
-                                        name     => $name,
-                                        planid   => $plan_id,
-                                        backupid => $backup_id,
-                                      }
-                                    )
-                                  );
+
+    # transform args into JSON and pass them to API server
+    my $response = $self->ua->post($url, Content => to_json($args));
 
     # POSSIBLE EXIT
     unless ($response->is_success) {
@@ -103,7 +97,7 @@ sub create_vm {
         return 0;
     }
 
-    $self->last ( from_json($response->decoded_content) );
+    $self->last(from_json($response->decoded_content));
 
     # POSSIBLE EXIT
     # TODO: should check the array for more messages
@@ -133,7 +127,7 @@ VM::JiffyBox - OO-API for JiffyBox Virtual Machine
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 SYNOPSIS
 
@@ -165,7 +159,10 @@ version 0.01
  say "plan_id: $plan_id";
  
  # create a clone of the VM
- my $clone_box  = $jiffy->create_vm( $clone_name, $plan_id, $backup_id );
+ my $clone_box  = $jiffy->create_vm( name     => $clone_name,
+                                     planid   => $plan_id,
+                                     backupid => $backup_id,
+                                   );
  
  # abort if create failed
  unless ($clone_box) {
@@ -200,7 +197,24 @@ So if you want to be sure, just use L<Data::Dumper> to print it.
 There are possibilities to take advantage of caching functionality.
 If you have once called get_details(), the results will be stored in the attribute C<details_cache>.
 
-=head1 METHODS
+=head1 METHODS (LOGIC)
+
+Methods that do not send API requests.
+They are just needed to prepare the requests internally, e.g. due to the OO-design.
+
+=head2 get_vm
+
+Returns an object-ref to an existing virtual machine (L<VM::JiffyBox::Box>).
+Takes the ID for the virtual machine as first argument.
+
+=head2 test_mode
+
+If set to any true value methods related to API-calls will just return information about the parameters it would have used to do the call.
+
+=head1 METHODS (API)
+
+Methods which are directly related to the official API.
+A call to such a method will directly lead to an API request to the server.
 
 =head2 get_details
 
@@ -209,6 +223,15 @@ Takes no arguments.
 
 Results are cached in C<details_cache>.
 
+=head2 create_vm
+
+Creates a new virtual machine and returns an object-ref to it (L<VM::JiffyBox::Box>).
+You can pass any named arguments as described by the official API from I<JiffyBox>, since they will be transformed directly to C<JSON> and sent to the API. This means, what is choosen as argument name, will be sent.
+
+=head1 METHODS (SHORTCUTS)
+
+Methods which are not part of the official API, but provide some often needed calls by using the API mentioned above.
+
 =head2 get_id_from_name
 
 Returns the ID for a specific virtual machine.
@@ -216,33 +239,49 @@ Takes the name for the virtual machine as first argument.
 
 (Also updates the C<details_cache>)
 
-=head2 get_vm
-
-Returns an object-ref to an existing virtual machine (L<VM::JiffyBox::Box>).
-Takes the ID for the virtual machine as first argument.
-
-=head2 create_vm
-
-Creates a new virtual machine and returns an object-ref to it (L<VM::JiffyBox::Box>).
-Takes 3 arguments:
-
 =over
 
-=item 1
+=item name
 
-name: The name for the new VM.
+The name for the new VM.
+Needed.
 
-=item 2
+=item planid
 
-plan_id: The ID for pricing.
+The ID for pricing.
+Needed.
 
-=item 3
+=item backupid
 
-backup_id: Name of the backup-image to take.
+Name of the backup-image to take.
+Needed if you don't use C<distribution>.
+
+=item distribution
+
+OS for the VM.
+Needed if you don't use C<backupid>.
+
+=item password
+
+Please look up the official API-Docs for description.
+Optinal.
+
+=item use_sskey
+
+Please look up the official API-Docs for description.
+Optinal.
+
+=item metadata
+
+Please look up the official API-Docs for description.
+Optinal.
 
 =back
 
-B<Note:> This methods interface could change in future releases, since it does not yet cover full functionality.
+There may be more options.
+Please see the official documentation of I<JiffyBox>.
+
+B<Note:> This methods interface changed (as announced) and is not compatible with older releases of L<VM::JiffyBox>.
 
 =head1 SEE ALSO
 
