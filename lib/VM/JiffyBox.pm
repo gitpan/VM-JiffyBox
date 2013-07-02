@@ -1,6 +1,6 @@
 package VM::JiffyBox;
 {
-  $VM::JiffyBox::VERSION = '0.02'; # TRIAL
+  $VM::JiffyBox::VERSION = '0.021';
 }
 
 # The line below is recognised by Dist::Zilla and taken for CPAN packaging
@@ -54,17 +54,21 @@ sub get_details {
 }
 
 sub get_id_from_name {
-    my $self = shift;
-    my $box_name = shift || '';
+    my $self     = shift;
+    my $box_name = shift || die 'box_name as argument needed';
     
     my $details = $self->get_details;
 
     $self->last         ( $details );
     $self->details_cache( $details );
     
+    # look for a match in the results
     foreach my $box (values %{$details->{result}}) {
         return $box->{id} if ($box->{name} eq $box_name);
     }
+
+    # if we reach here, this means there was no match
+    return 0;
 }
 
 sub get_vm {
@@ -107,10 +111,7 @@ sub create_vm {
     }
 
     my $box_id = $self->last->{result}->{id};
-    my $box = VM::JiffyBox::Box->new(id => $box_id);
-
-    # set the hypervisor of the VM
-    $box->hypervisor($self);
+    my $box = VM::JiffyBox::Box->new(id => $box_id, hypervisor => $self);
 
     return $box;
 }
@@ -127,7 +128,7 @@ VM::JiffyBox - OO-API for JiffyBox Virtual Machine
 
 =head1 VERSION
 
-version 0.02
+version 0.021
 
 =head1 SYNOPSIS
 
@@ -228,17 +229,6 @@ Results are cached in C<details_cache>.
 Creates a new virtual machine and returns an object-ref to it (L<VM::JiffyBox::Box>).
 You can pass any named arguments as described by the official API from I<JiffyBox>, since they will be transformed directly to C<JSON> and sent to the API. This means, what is choosen as argument name, will be sent.
 
-=head1 METHODS (SHORTCUTS)
-
-Methods which are not part of the official API, but provide some often needed calls by using the API mentioned above.
-
-=head2 get_id_from_name
-
-Returns the ID for a specific virtual machine.
-Takes the name for the virtual machine as first argument.
-
-(Also updates the C<details_cache>)
-
 =over
 
 =item name
@@ -282,6 +272,18 @@ There may be more options.
 Please see the official documentation of I<JiffyBox>.
 
 B<Note:> This methods interface changed (as announced) and is not compatible with older releases of L<VM::JiffyBox>.
+
+=head1 METHODS (SHORTCUTS)
+
+Methods which are not part of the official API, but provide some often needed calls by using the API mentioned above.
+
+=head2 get_id_from_name
+
+Returns the ID for a specific virtual machine.
+Takes the name for the virtual machine as first argument.
+Returns C<0> if there was no match.
+
+(Also updates the C<details_cache>)
 
 =head1 SEE ALSO
 
