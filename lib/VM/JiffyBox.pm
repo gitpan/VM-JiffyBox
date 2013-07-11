@@ -1,6 +1,6 @@
 package VM::JiffyBox;
 {
-  $VM::JiffyBox::VERSION = '0.021';
+  $VM::JiffyBox::VERSION = '0.022';
 }
 
 # The line below is recognised by Dist::Zilla and taken for CPAN packaging
@@ -128,7 +128,7 @@ VM::JiffyBox - OO-API for JiffyBox Virtual Machine
 
 =head1 VERSION
 
-version 0.021
+version 0.022
 
 =head1 SYNOPSIS
 

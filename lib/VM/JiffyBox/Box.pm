@@ -1,6 +1,6 @@
 package VM::JiffyBox::Box;
 {
-  $VM::JiffyBox::Box::VERSION = '0.021';
+  $VM::JiffyBox::Box::VERSION = '0.022';
 }
 
 # ABSTRACT: Representation of a Virtual Machine in JiffyBox
@@ -159,7 +159,7 @@ VM::JiffyBox::Box - Representation of a Virtual Machine in JiffyBox
 
 =head1 VERSION
 
-version 0.021
+version 0.022
 
 =head1 SYNOPSIS
 
