@@ -23,7 +23,8 @@ my %WriteMakefileArgs = (
     "JSON" => 0,
     "LWP::Protocol::https" => 0,
     "LWP::UserAgent" => 0,
-    "Moo" => 0
+    "Moo" => 0,
+    "Scalar::Util" => 0
   },
   "TEST_REQUIRES" => {
     "Test::Exception" => 0,
@@ -31,7 +32,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.023",
+  "VERSION" => "0.0231",
   "test" => {
     "TESTS" => "t/*.t"
   }

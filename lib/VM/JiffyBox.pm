@@ -1,6 +1,6 @@
 package VM::JiffyBox;
 {
-  $VM::JiffyBox::VERSION = '0.023'; # TRIAL
+  $VM::JiffyBox::VERSION = '0.0231'; # TRIAL
 }
 
 # The line below is recognised by Dist::Zilla and taken for CPAN packaging
@@ -9,6 +9,7 @@ package VM::JiffyBox;
 use Moo;
 use JSON;
 use LWP::UserAgent;
+use Scalar::Util qw( reftype );
 
 use VM::JiffyBox::Box;
 
@@ -63,6 +64,11 @@ sub get_id_from_name {
     return 0 unless $details;
 
     $self->last         ( $details );
+
+    # EXIT if no expected result
+    return 0 unless (reftype $details->{result} eq 'HASH');
+    return 0 unless ($details->{result}->{id}->{name});
+
     $self->details_cache( $details );
     
     # look for a match in the results
@@ -131,7 +137,7 @@ VM::JiffyBox - OO-API for JiffyBox Virtual Machine
 
 =head1 VERSION
 
-version 0.023
+version 0.0231
 
 =head1 SYNOPSIS
 
