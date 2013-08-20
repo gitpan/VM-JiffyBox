@@ -1,6 +1,6 @@
 package VM::JiffyBox;
 {
-  $VM::JiffyBox::VERSION = '0.022';
+  $VM::JiffyBox::VERSION = '0.023'; # TRIAL
 }
 
 # The line below is recognised by Dist::Zilla and taken for CPAN packaging
@@ -58,6 +58,9 @@ sub get_id_from_name {
     my $box_name = shift || die 'box_name as argument needed';
     
     my $details = $self->get_details;
+
+    # EXIT if no details
+    return 0 unless $details;
 
     $self->last         ( $details );
     $self->details_cache( $details );
@@ -128,7 +131,7 @@ VM::JiffyBox - OO-API for JiffyBox Virtual Machine
 
 =head1 VERSION
 
-version 0.022
+version 0.023
 
 =head1 SYNOPSIS
 

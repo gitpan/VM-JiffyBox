@@ -22,3 +22,4 @@ t/00_load.t
 t/01_create.t
 t/03_need_to_die.t
 t/05_box-requests.t
+xt/changes.t
