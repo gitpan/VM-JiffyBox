@@ -1,6 +1,6 @@
 package VM::JiffyBox;
 {
-  $VM::JiffyBox::VERSION = '0.0232'; # TRIAL
+  $VM::JiffyBox::VERSION = '0.0232';
 }
 
 # The line below is recognised by Dist::Zilla and taken for CPAN packaging
