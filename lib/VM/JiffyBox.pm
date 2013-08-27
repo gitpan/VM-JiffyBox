@@ -1,6 +1,6 @@
 package VM::JiffyBox;
 {
-  $VM::JiffyBox::VERSION = '0.0232';
+  $VM::JiffyBox::VERSION = '0.024';
 }
 
 # The line below is recognised by Dist::Zilla and taken for CPAN packaging
@@ -43,7 +43,7 @@ sub get_details {
     # POSSIBLE EXIT
     unless ($response->is_success) {
         $self->last ($response->status_line);
-        return 0;
+        return;
     }
 
     my $details = from_json($response->decoded_content);
@@ -61,14 +61,14 @@ sub get_id_from_name {
     my $details = $self->get_details;
 
     # EXIT if no details
-    return 0 unless $details;
+    return unless $details;
 
     $self->last         ( $details );
 
     # EXIT if no expected result
-    return 0 unless (reftype $details eq 'HASH');
-    return 0 unless (exists $details->{result});
-    return 0 unless (reftype $details->{result} eq 'HASH');
+    return unless (reftype $details eq 'HASH');
+    return unless (exists $details->{result});
+    return unless (reftype $details->{result} eq 'HASH');
 
     $self->details_cache( $details );
     
@@ -76,13 +76,13 @@ sub get_id_from_name {
     foreach my $box (values %{$details->{result}}) {
 
         # EXIT if no expected result
-        return 0 unless (reftype $box eq 'HASH');
+        return unless (reftype $box eq 'HASH');
 
         return $box->{id} if ($box->{name} eq $box_name);
     }
 
     # if we reach here, this means there was no match
-    return 0;
+    return;
 }
 
 sub get_vm {
@@ -112,7 +112,7 @@ sub create_vm {
     # POSSIBLE EXIT
     unless ($response->is_success) {
         $self->last ($response->status_line);
-        return 0;
+        return;
     }
 
     $self->last(from_json($response->decoded_content));
@@ -121,7 +121,7 @@ sub create_vm {
     # TODO: should check the array for more messages
     if (exists $self->last->{messages}->[0]->{type}
         and    $self->last->{messages}->[0]->{type} eq 'error') {
-        return 0;
+        return;
     }
 
     my $box_id = $self->last->{result}->{id};
@@ -142,7 +142,7 @@ VM::JiffyBox - OO-API for JiffyBox Virtual Machine
 
 =head1 VERSION
 
-version 0.0232
+version 0.024
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,6 @@
 package VM::JiffyBox::Box;
 {
-  $VM::JiffyBox::Box::VERSION = '0.0232';
+  $VM::JiffyBox::Box::VERSION = '0.024';
 }
 
 # ABSTRACT: Representation of a Virtual Machine in JiffyBox
@@ -32,7 +32,7 @@ sub get_backups {
     unless ($response->is_success) {
 
         $self->last ( $response->status_line );
-        return 0;
+        return;
     }
 
     my $backup_info = from_json($response->decoded_content);
@@ -60,7 +60,7 @@ sub get_details {
     unless ($response->is_success) {
 
         $self->last ( $response->status_line );
-        return 0;
+        return;
     }
 
     my $details = from_json($response->decoded_content);
@@ -87,7 +87,7 @@ sub start {
     unless ($response->is_success) {
 
         $self->last ( $response->status_line );
-        return 0;
+        return;
     }
 
     my $start_info = from_json($response->decoded_content);
@@ -113,7 +113,7 @@ sub stop {
     unless ($response->is_success) {
 
         $self->last ( $response->status_line );
-        return 0;
+        return;
     }
 
     my $stop_info = from_json($response->decoded_content);
@@ -137,7 +137,7 @@ sub delete {
     unless ($response->is_success) {
 
         $self->last ( $response->status_line );
-        return 0;
+        return;
     }
 
     my $delete_info = from_json($response->decoded_content);
@@ -159,7 +159,7 @@ VM::JiffyBox::Box - Representation of a Virtual Machine in JiffyBox
 
 =head1 VERSION
 
-version 0.0232
+version 0.024
 
 =head1 SYNOPSIS
 
