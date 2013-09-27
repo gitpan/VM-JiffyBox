@@ -1,10 +1,13 @@
 package VM::JiffyBox;
 {
-  $VM::JiffyBox::VERSION = '0.024';
+  $VM::JiffyBox::VERSION = '0.025';
 }
 
 # The line below is recognised by Dist::Zilla and taken for CPAN packaging
 # ABSTRACT: OO-API for JiffyBox Virtual Machine
+
+use strict;
+use warnings;
 
 use Moo;
 use JSON;
@@ -142,7 +145,7 @@ VM::JiffyBox - OO-API for JiffyBox Virtual Machine
 
 =head1 VERSION
 
-version 0.024
+version 0.025
 
 =head1 SYNOPSIS
 

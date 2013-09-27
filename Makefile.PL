@@ -24,15 +24,15 @@ my %WriteMakefileArgs = (
     "LWP::Protocol::https" => 0,
     "LWP::UserAgent" => 0,
     "Moo" => 0,
-    "Scalar::Util" => 0
-  },
-  "TEST_REQUIRES" => {
-    "Test::Exception" => 0,
-    "Test::More" => 0,
+    "Scalar::Util" => 0,
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.024",
+  "TEST_REQUIRES" => {
+    "Test::Exception" => 0,
+    "Test::More" => 0
+  },
+  "VERSION" => "0.025",
   "test" => {
     "TESTS" => "t/*.t"
   }
