@@ -1,8 +1,5 @@
 package VM::JiffyBox::Box;
-{
-  $VM::JiffyBox::Box::VERSION = '0.026';
-}
-
+$VM::JiffyBox::Box::VERSION = '0.027'; # TRIAL
 # ABSTRACT: Representation of a Virtual Machine in JiffyBox
 
 use strict;
@@ -156,13 +153,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 VM::JiffyBox::Box - Representation of a Virtual Machine in JiffyBox
 
 =head1 VERSION
 
-version 0.026
+version 0.027
 
 =head1 SYNOPSIS
 
@@ -193,8 +192,6 @@ You then can do a lot of stuff with this box:
  # and so on...
 
 (See also the SYNOPSIS of L<VM::JiffyBox> or the C<examples> directory for more examples of working code.)
-
-=encoding utf8
 
 =head1 ERROR HANDLING
 

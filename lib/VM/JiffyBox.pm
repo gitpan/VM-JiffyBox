@@ -1,8 +1,5 @@
 package VM::JiffyBox;
-{
-  $VM::JiffyBox::VERSION = '0.026';
-}
-
+$VM::JiffyBox::VERSION = '0.027'; # TRIAL
 # The line below is recognised by Dist::Zilla and taken for CPAN packaging
 # ABSTRACT: OO-API for JiffyBox Virtual Machine
 
@@ -133,11 +130,61 @@ sub create_vm {
     return $box;
 }
 
+sub get_distributions {
+    my ($self) = shift;
+
+    my $url      = $self->base_url . '/distributions';
+    my $response = $self->ua->get( $url );
+
+    unless ( $response->is_success ) {
+        $self->last ($response->status_line);
+        return;
+    }
+
+    $self->last( from_json( $response->decoded_content ) );
+
+    return $self->last;
+}
+
+sub get_plans {
+    my ($self) = shift;
+
+    my $url      = $self->base_url . '/plans';
+    my $response = $self->ua->get( $url );
+
+    unless ( $response->is_success ) {
+        $self->last ($response->status_line);
+        return;
+    }
+
+    $self->last( from_json( $response->decoded_content ) );
+
+    return $self->last;
+}
+
+sub get_plan_details {
+    my ($self, $id_or_name) = @_;
+
+    my $url      = $self->base_url . '/plans/' . $id_or_name;
+    my $response = $self->ua->get( $url );
+
+    unless ( $response->is_success ) {
+        $self->last ($response->status_line);
+        return;
+    }
+
+    $self->last( from_json( $response->decoded_content ) );
+
+    return $self->last;
+}
+
 1;
 
 __END__
 
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -145,7 +192,7 @@ VM::JiffyBox - OO-API for JiffyBox Virtual Machine
 
 =head1 VERSION
 
-version 0.026
+version 0.027
 
 =head1 SYNOPSIS
 
@@ -198,8 +245,6 @@ version 0.026
  $clone_box->start();
 
 (See the C<examples> directory for more examples of working code.)
-
-=encoding utf8
 
 =head1 ERROR HANDLING
 
@@ -288,7 +333,22 @@ Optinal.
 There may be more options.
 Please see the official documentation of I<JiffyBox>.
 
-B<Note:> This methods interface changed (as announced) and is not compatible with older releases of L<VM::JiffyBox>.
+=head2 get_distributions
+
+Get information about available distribution images for the virtual machines.
+Returns a hashref.
+
+=head2 get_plans
+
+Get information about existing plans (pricing).
+Takes no arguments.
+Returns a hashref.
+
+=head2 get_plan_details
+
+Returns details for a plan-id or name (pricing model).
+Pass name or ID as an argument to the method.
+Returns a hashref.
 
 =head1 METHODS (SHORTCUTS)
 
