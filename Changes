@@ -1,6 +1,6 @@
 Revision history for VM-JiffyBox
  
-0.027     2014-03-27 17:28:53+01:00 Europe/Zurich (TRIAL RELEASE)
+0.027     2014-03-28 10:58:56+01:00 Europe/Zurich
           added methods distributions, plans and plan_details (RENEEB)
           deleted old note about backwards compatibility
 

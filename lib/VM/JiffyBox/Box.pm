@@ -1,5 +1,5 @@
 package VM::JiffyBox::Box;
-$VM::JiffyBox::Box::VERSION = '0.027'; # TRIAL
+$VM::JiffyBox::Box::VERSION = '0.027';
 # ABSTRACT: Representation of a Virtual Machine in JiffyBox
 
 use strict;
